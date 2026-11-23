@@ -1,0 +1,351 @@
+
+<div class="page-container">
+
+  <!-- Header -->
+  <header class="header">
+    <h1>Employee Management System</h1>
+    <p>Manage your employees in one place</p>
+  </header>
+
+
+  <!-- Dashboard -->
+  <section class="dashboard">
+
+    <div class="summary-card">
+      <h3>Total Employees</h3>
+      <h2>{{ totalEmployeesCount }}</h2>
+    </div>
+
+    <div class="summary-card">
+      <h3>Active Employees</h3>
+      <h2>{{ activeEmployeesCount }}</h2>
+    </div>
+
+    <div class="summary-card">
+      <h3>Inactive Employees</h3>
+      <h2>{{ inactiveEmployeesCount }}</h2>
+    </div>
+
+  </section>
+
+
+  <!-- Employee Section -->
+  <section class="employee-section">
+
+    <div class="section-header">
+
+      <h2>
+        Employee List ({{ filteredEmployees.length }})
+      </h2>
+
+      <button
+        type="button"
+        (click)="openAddForm()">
+        Add Employee
+      </button>
+
+    </div>
+
+
+    <!-- Add / Edit Form -->
+    @if (showForm) {
+
+      <div class="employee-form">
+
+        <h2>
+          {{ isEditMode ? 'Edit Employee' : 'Add New Employee' }}
+        </h2>
+
+
+        <label>Employee Name</label>
+
+        <input
+          type="text"
+          [(ngModel)]="newEmployee.employeeName"
+          placeholder="Enter employee name"
+          required>
+
+
+        <label>Email</label>
+
+        <input
+          type="email"
+          [(ngModel)]="newEmployee.employeeEmail"
+          placeholder="Enter email"
+          required>
+
+
+        <label>Department</label>
+
+        <input
+          type="text"
+          [(ngModel)]="newEmployee.employeeDepartment"
+          placeholder="Enter department"
+          required>
+
+
+        <label>Salary</label>
+
+        <input
+          type="number"
+          [(ngModel)]="newEmployee.employeeSalary"
+          placeholder="Enter salary"
+          min="1"
+          required>
+
+
+        <label>Joining Date</label>
+
+        <input
+          type="date"
+          [(ngModel)]="newEmployee.joiningDate"
+          required>
+
+
+        <label>Employee Status</label>
+
+        <select [(ngModel)]="newEmployee.active">
+
+          <option [ngValue]="true">Active</option>
+
+          <option [ngValue]="false">Inactive</option>
+
+        </select>
+
+
+        <div class="form-actions">
+
+          <button
+            type="button"
+            (click)="isEditMode ? updateEmployee() : saveEmployee()">
+
+            {{ isEditMode ? 'Update Employee' : 'Save Employee' }}
+
+          </button>
+
+          <button
+            type="button"
+            (click)="cancelForm()">
+
+            Cancel
+
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+
+    <!-- Search and Filters -->
+    <div class="filter-section">
+
+      <h3>Search and Filter Employees</h3>
+
+      <input
+        type="text"
+        [(ngModel)]="searchText"
+        (ngModelChange)="onFilterChange()"
+        placeholder="Search by ID, name or email">
+
+
+      <select
+        [(ngModel)]="selectedDepartment"
+        (ngModelChange)="onFilterChange()">
+
+        <option value="All">All Departments</option>
+
+        @for (department of departments; track department) {
+
+          <option [value]="department">
+            {{ department }}
+          </option>
+
+        }
+
+      </select>
+
+
+      <select
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="onFilterChange()">
+
+        <option value="All">All Status</option>
+
+        <option value="Active">Active</option>
+
+        <option value="Inactive">Inactive</option>
+
+      </select>
+
+
+      <button
+        type="button"
+        (click)="clearFilters()">
+
+        Clear Filters
+
+      </button>
+
+    </div>
+
+
+    <!-- Sorting and Page Size -->
+    <div class="sorting-section">
+
+      <label>Sort By</label>
+
+      <select
+        [(ngModel)]="sortBy"
+        (ngModelChange)="onSortChange()">
+
+        <option value="id">Employee ID</option>
+
+        <option value="name">Employee Name</option>
+
+        <option value="salary">Salary</option>
+
+        <option value="joiningDate">Joining Date</option>
+
+      </select>
+
+
+      <button
+        type="button"
+        (click)="toggleSortDirection()">
+
+        {{ sortDirection === 'asc' ? 'Ascending ↑' : 'Descending ↓' }}
+
+      </button>
+
+
+      <label>Records Per Page</label>
+
+      <select
+        [(ngModel)]="pageSize"
+        (ngModelChange)="onPageSizeChange()">
+
+        <option [ngValue]="5">5</option>
+
+        <option [ngValue]="10">10</option>
+
+        <option [ngValue]="20">20</option>
+
+      </select>
+
+    </div>
+
+
+    <!-- Employee Table -->
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Department</th>
+          <th>Salary</th>
+          <th>Joining Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @for (employee of paginatedEmployees; track employee.employeeCode) {
+
+          <tr>
+
+            <td>{{ employee.employeeCode }}</td>
+
+            <td>{{ employee.displayName }}</td>
+
+            <td>{{ employee.contactEmail }}</td>
+
+            <td>{{ employee.departmentName }}</td>
+
+            <td>{{ employee.monthlySalary }}</td>
+
+            <td>{{ employee.joiningDate }}</td>
+
+            <td>
+              {{ employee.active ? 'Active' : 'Inactive' }}
+            </td>
+
+            <td>
+
+              <button
+                type="button"
+                (click)="editEmployee(employee)">
+
+                Edit
+
+              </button>
+
+              <button
+                type="button"
+                (click)="deleteEmployee(employee.employeeCode)">
+
+                Delete
+
+              </button>
+
+            </td>
+
+          </tr>
+
+        } @empty {
+
+          <tr>
+
+            <td colspan="8">
+              No employees found
+            </td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+
+    <!-- Pagination -->
+    <div class="pagination">
+
+      <button
+        type="button"
+        (click)="previousPage()"
+        [disabled]="currentPage === 1">
+
+        Previous
+
+      </button>
+
+
+      <span>
+        Page {{ currentPage }} of {{ totalPages }}
+      </span>
+
+
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages">
+
+        Next
+
+      </button>
+
+    </div>
+
+  </section>
+
+</div>
