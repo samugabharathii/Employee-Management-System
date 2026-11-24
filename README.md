@@ -21,6 +21,17 @@ A full-stack web application developed to manage employee records efficiently us
 - Form validation
 - Duplicate email validation
 
+- ## Screenshots
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Employee List
+![Employee List](screenshots/employee-list.png)
+
+### Add Employee
+![Add Employee](screenshots/add-employee.png)
+
 ## Project Structure
 
 - `Backend` – Spring Boot REST API and database operations
